@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Göteborg Traffic Alerts</title>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+    h1 { color: #333; }
+    .alert { margin-bottom: 1em; padding: 1em; background: #fff3cd; border-left: 5px solid #ffa500; }
+  </style>
+</head>
+<body>
+  <h1>Göteborg Traffic Alerts</h1>
+  <div id="messages">Loading...</div>
+
+  <script>
+    fetch('https://trafiken.nu/api/trafficmessages?region=gbg&trafficType=V%C3%A4gtrafik')
+      .then(res => res.json())
+      .then(data => {
+        const messages = data.messages || [];
+        const container = document.getElementById('messages');
+        container.innerHTML = messages.length ? '' : 'No active messages.';
+        messages.forEach(msg => {
+          const div = document.createElement('div');
+          div.className = 'alert';
+          div.innerHTML = `<strong>${msg.title}</strong><br>${msg.description}`;
+          container.appendChild(div);
+        });
+      })
+      .catch(err => {
+        document.getElementById('messages').textContent = 'Failed to load messages.';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
